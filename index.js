@@ -25,15 +25,20 @@ function textIncludesKeyword(text) {
 }
 
 async function sendTelegramMessage(message) {
-    try {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        await axios.post(url, {
-            chat_id: CHAT_ID,
-            text: message
-        });
-        console.log("[SUCCESS] Telegram message sent.");
-    } catch (err) {
-        console.error("[ERROR] Telegram error:", err.message);
+    const chatIds = [process.env.CHAT_ID, process.env.CHAT_ID_2];
+
+    for (const chatId of chatIds) {
+        try {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            await axios.post(url, {
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'Markdown'
+            });
+            console.log(`[SUCCESS] Telegram message sent to ${chatId}.`);
+        } catch (err) {
+            console.error(`[ERROR] Telegram error for ${chatId}:`, err.message);
+        }
     }
 }
 
